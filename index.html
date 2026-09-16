@@ -6,12 +6,14 @@
   <meta name="theme-color" content="#101214" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Compagnon Lafay V0.7</title>
+  <title>Compagnon Lafay V0.8</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 <div id="app">
+
   <header class="top">
     <div>
       <div class="eyebrow">PROGRAMME 2026</div>
@@ -21,7 +23,13 @@
   </header>
 
   <main>
+
+    <!-- =====================================================
+         ACCUEIL
+         ===================================================== -->
+
     <section id="home" class="page active">
+
       <div class="hero card today-hero">
         <div>
           <div class="eyebrow">AUJOURD’HUI</div>
@@ -33,28 +41,54 @@
       </div>
 
       <div class="card" id="todayChecklistCard">
-        <div class="section-title"><h3>À faire aujourd’hui</h3><span class="badge" id="todayProgressBadge">0/0</span></div>
+        <div class="section-title">
+          <h3>À faire aujourd’hui</h3>
+          <span class="badge" id="todayProgressBadge">0/0</span>
+        </div>
         <div id="todayChecklist"></div>
       </div>
 
       <div class="grid3">
-        <div class="stat card"><span>Musculation</span><strong id="muscuScore">0/2</strong></div>
-        <div class="stat card"><span>Souplesse</span><strong id="flexScore">0/3</strong></div>
-        <div class="stat card"><span>4 piliers</span><strong id="pillarsScore">0/3</strong></div>
+        <div class="stat card">
+          <span>Musculation</span>
+          <strong id="muscuScore">0/2</strong>
+        </div>
+
+        <div class="stat card">
+          <span>Souplesse</span>
+          <strong id="flexScore">0/3</strong>
+        </div>
+
+        <div class="stat card">
+          <span>4 piliers</span>
+          <strong id="pillarsScore">0/3</strong>
+        </div>
       </div>
 
       <div class="card">
-        <div class="section-title"><h3>Semaine</h3><span class="muted">objectif</span></div>
+        <div class="section-title">
+          <h3>Semaine</h3>
+          <span class="muted">objectif</span>
+        </div>
         <div id="weekPlan"></div>
       </div>
 
       <div class="card">
-        <div class="section-title"><h3>Dernière activité</h3><span class="muted">historique</span></div>
-        <div id="lastActivity"><p class="muted">Aucune activité enregistrée.</p></div>
+        <div class="section-title">
+          <h3>Dernière activité</h3>
+          <span class="muted">historique</span>
+        </div>
+        <div id="lastActivity">
+          <p class="muted">Aucune activité enregistrée.</p>
+        </div>
       </div>
 
       <div class="card">
-        <div class="section-title"><h3>Point de départ</h3><span class="badge">09/09/2026</span></div>
+        <div class="section-title">
+          <h3>Point de départ</h3>
+          <span class="badge">09/09/2026</span>
+        </div>
+
         <div class="metrics">
           <div><span>Poids</span><b>85 kg</b></div>
           <div><span>Taille</span><b>99 cm</b></div>
@@ -62,249 +96,1083 @@
           <div><span>Épaules</span><b>122 cm</b></div>
         </div>
       </div>
+
     </section>
 
+
+    <!-- =====================================================
+         MUSCULATION
+         ===================================================== -->
+
     <section id="session" class="page">
+
       <div id="strengthHome">
-        <div class="section-title"><h2>Musculation</h2><span class="badge">V0.5 coach</span></div>
-        <p class="muted intro">Le moteur de séance est prêt. Le programme de départ sera déterminé après tes tests A / B / C / A1.</p>
+
+        <div class="section-title">
+          <h2>Musculation</h2>
+          <span class="badge">V0.8 coach</span>
+        </div>
+
+        <p class="muted intro">
+          Tests, programme automatique, séries, récupérations et progression mémorisée.
+        </p>
 
         <div class="card">
-          <div class="section-title"><h3>Étape 1 — Tests</h3><span class="muted" id="testStatus">à faire</span></div>
-          <p class="muted">Échauffement, puis une performance propre sur A, B, C et A1 avec 3 minutes entre les tests.</p>
-          <button class="primary wide" id="openTests">Lancer les tests</button>
+          <div class="section-title">
+            <h3>Étape 1 — Tests</h3>
+            <span class="muted" id="testStatus">à faire</span>
+          </div>
+
+          <p class="muted">
+            Échauffement, puis une performance propre sur A, B, C et A1 avec 3 minutes entre les tests.
+          </p>
+
+          <button class="primary wide" id="openTests">
+            Lancer les tests
+          </button>
         </div>
 
         <div class="card">
-          <div class="section-title"><h3>Étape 2 — Programme</h3><span class="muted">après tests</span></div>
-          <div id="programDecision"><p class="muted">Aucune prescription automatique tant que les quatre tests ne sont pas enregistrés.</p></div>
+          <div class="section-title">
+            <h3>Étape 2 — Programme</h3>
+            <span class="muted">après tests</span>
+          </div>
+
+          <div id="programDecision">
+            <p class="muted">
+              Aucune prescription automatique tant que les quatre tests ne sont pas enregistrés.
+            </p>
+          </div>
+
           <div id="coachDecision" class="coach-decision"></div>
         </div>
 
         <div class="card">
           <h3>Moteur de séance</h3>
+
           <div class="feature-lines">
-            <div>✓ séries et répétitions réelles</div><div>✓ récupération automatique</div>
-            <div>✓ difficulté 1–5</div><div>✓ qualité technique</div>
-            <div>✓ gêne / douleur</div><div>✓ bilan de séance</div>
+            <div>✓ séries et répétitions réelles</div>
+            <div>✓ récupération automatique</div>
+            <div>✓ difficulté 1–5</div>
+            <div>✓ qualité technique</div>
+            <div>✓ gêne / douleur</div>
+            <div>✓ bilan de séance</div>
           </div>
-          <button class="secondary wide" id="demoWorkout">Prévisualiser le moteur</button>
+
+          <button class="secondary wide" id="demoWorkout">
+            Prévisualiser le moteur
+          </button>
         </div>
+
         <div class="card">
-          <div class="section-title"><h3>Bilan avant séance</h3><span class="muted">30 secondes</span></div>
-          <div class="readiness">
-            <label>Énergie <b id="energyVal">3/5</b></label><input id="energy" type="range" min="1" max="5" value="3">
-            <label>Récupération <b id="recoveryVal">3/5</b></label><input id="recovery" type="range" min="1" max="5" value="3">
+          <div class="section-title">
+            <h3>Bilan avant séance</h3>
+            <span class="muted">30 secondes</span>
           </div>
-          <p class="muted small">Ces données n'altèrent pas silencieusement le programme : elles servent au futur moteur de recommandation et au bilan.</p>
+
+          <div class="readiness">
+            <label>
+              Énergie
+              <b id="energyVal">3/5</b>
+            </label>
+            <input id="energy" type="range" min="1" max="5" value="3">
+
+            <label>
+              Récupération
+              <b id="recoveryVal">3/5</b>
+            </label>
+            <input id="recovery" type="range" min="1" max="5" value="3">
+          </div>
+
+          <p class="muted small">
+            Ces données servent au bilan et au moteur de recommandation.
+          </p>
         </div>
+
       </div>
+
+
+      <!-- TESTS -->
 
       <div id="testRunner" class="pillar-runner">
-        <div class="runner-top"><button class="back" id="testClose">‹</button><div><div class="eyebrow">TEST INITIAL</div><h2>A / B / C / A1</h2></div></div>
+
+        <div class="runner-top">
+          <button class="back" id="testClose">‹</button>
+
+          <div>
+            <div class="eyebrow">TEST INITIAL</div>
+            <h2>A / B / C / A1</h2>
+          </div>
+        </div>
+
         <div class="card runner-card">
-          <div class="badge" id="testProgress">Échauffement</div>
+
+          <div class="badge" id="testProgress">
+            Échauffement
+          </div>
+
           <h2 id="testExercise">Préparation</h2>
+
           <p class="muted" id="testHelp"></p>
+
           <div id="testRepBox" class="counter-row">
             <button class="counter" id="testMinus">−</button>
-            <div><span class="muted">Répétitions</span><strong id="testReps">0</strong></div>
+
+            <div>
+              <span class="muted">Répétitions</span>
+              <strong id="testReps">0</strong>
+            </div>
+
             <button class="counter" id="testPlus">+</button>
           </div>
-          <div id="testRestClock" class="big-clock">03:00</div>
-          <button class="primary wide" id="testAction">Commencer</button>
+
+          <div id="testRestClock" class="big-clock">
+            03:00
+          </div>
+
+          <button class="primary wide" id="testAction">
+            Commencer
+          </button>
+
         </div>
-        <div class="safety-note">Le test sert à choisir le point de départ actuel. Il ne cherche pas à reproduire tes performances de 2019.</div>
+
+        <div class="safety-note">
+          Le test sert à choisir ton point de départ actuel.
+        </div>
+
       </div>
+
+
+      <!-- MOTEUR MUSCULATION -->
 
       <div id="workoutRunner" class="pillar-runner">
-        <div class="runner-top"><button class="back" id="workoutClose">‹</button><div><div class="eyebrow">MUSCULATION</div><h2 id="workoutTitle">Séance</h2></div></div>
-        <div class="card runner-card">
-          <div class="badge" id="workoutProgress"></div>
-          <h2 id="workoutExercise"></h2>
-          <p class="muted" id="workoutTarget"></p>
-          <div id="workoutClock" class="big-clock"></div>
-          <div id="workoutRepEntry" class="counter-row">
-            <button class="counter" id="workoutMinus">−</button>
-            <div><span class="muted">Répétitions faites</span><strong id="workoutReps">0</strong></div>
-            <button class="counter" id="workoutPlus">+</button>
+
+        <div class="runner-top">
+          <button class="back" id="workoutClose">‹</button>
+
+          <div>
+            <div class="eyebrow">MUSCULATION</div>
+            <h2 id="workoutTitle">Séance</h2>
           </div>
-          <button class="primary wide" id="workoutAction">Valider la série</button>
         </div>
+
+        <div class="card runner-card">
+
+          <div class="badge" id="workoutProgress"></div>
+
+          <h2 id="workoutExercise"></h2>
+
+          <p class="muted" id="workoutTarget"></p>
+
+          <div id="workoutClock" class="big-clock"></div>
+
+          <div id="workoutRepEntry" class="counter-row">
+
+            <button class="counter" id="workoutMinus">−</button>
+
+            <div>
+              <span class="muted">Répétitions faites</span>
+              <strong id="workoutReps">0</strong>
+            </div>
+
+            <button class="counter" id="workoutPlus">+</button>
+
+          </div>
+
+          <button class="primary wide" id="workoutAction">
+            Valider la série
+          </button>
+
+        </div>
+
 
         <div class="card" id="workoutFeedback" style="display:none">
-          <h3>Fin de l'exercice</h3>
-          <p class="muted">Comment s'est passé cet exercice ?</p>
-          <label>Difficulté <b id="difficultyValue">3/5</b></label>
-          <input type="range" id="difficulty" min="1" max="5" value="3">
+
+          <h3>Fin de l’exercice</h3>
+
+          <p class="muted">
+            Comment s’est passé cet exercice ?
+          </p>
+
+          <label>
+            Difficulté
+            <b id="difficultyValue">3/5</b>
+          </label>
+
+          <input
+            type="range"
+            id="difficulty"
+            min="1"
+            max="5"
+            value="3"
+          >
+
           <div class="choice-row">
-            <button class="choice selected" data-tech="clean">Technique propre</button>
-            <button class="choice" data-tech="mixed">À surveiller</button>
+            <button class="choice selected" data-tech="clean">
+              Technique propre
+            </button>
+
+            <button class="choice" data-tech="mixed">
+              À surveiller
+            </button>
           </div>
+
           <div class="choice-row">
-            <button class="choice selected" data-pain="none">Aucune douleur</button>
-            <button class="choice danger" data-pain="discomfort">Gêne</button>
-            <button class="choice danger" data-pain="pain">Douleur</button>
+            <button class="choice selected" data-pain="none">
+              Aucune douleur
+            </button>
+
+            <button class="choice danger" data-pain="discomfort">
+              Gêne
+            </button>
+
+            <button class="choice danger" data-pain="pain">
+              Douleur
+            </button>
           </div>
-          <button class="primary wide" id="feedbackValidate">Exercice suivant</button>
+
+          <button class="primary wide" id="feedbackValidate">
+            Exercice suivant
+          </button>
+
         </div>
-        <div class="card" id="workoutSummary" style="display:none"></div>
+
+        <div
+          class="card"
+          id="workoutSummary"
+          style="display:none"
+        ></div>
+
       </div>
+
     </section>
+
+
+    <!-- =====================================================
+         4 PILIERS V0.8
+         ===================================================== -->
 
     <section id="pillars" class="page">
+
       <div id="pillarListView">
-        <div class="section-title"><h2>4 piliers</h2><span class="badge">V0.2 guidée</span></div>
-        <p class="muted intro">Une vraie séance guidée : chronos, séries, récupération, vibration et historique.</p>
-        <div id="pillarCards"></div>
-      </div>
-      <div id="pillarRunner" class="pillar-runner">
-        <div class="runner-top"><button class="back" id="pillarClose">‹</button><div><div class="eyebrow">4 PILIERS</div><h2 id="pillarRunTitle"></h2></div></div>
-        <div class="card runner-card">
-          <div class="badge" id="pillarProgress"></div>
-          <h2 id="pillarPhase"></h2>
-          <p class="muted" id="pillarHelp"></p>
-          <div id="pillarClock">00:00</div>
-          <div id="pillarRepControls"></div>
-          <button class="primary wide" id="pillarAction">Démarrer</button>
+
+        <div class="section-title">
+          <h2>Mes 4 piliers</h2>
+          <span class="badge">Coach V0.8</span>
         </div>
-        <div class="safety-note">La tension musculaire peut être normale. En cas de douleur articulaire, notamment à la hanche, arrête le mouvement concerné.</div>
+
+        <p class="muted intro">
+          Apprendre, pratiquer et progresser dans les quatre piliers avec un guidage étape par étape.
+        </p>
+
+
+        <div class="card">
+
+          <div class="section-title">
+            <h3>Séance complète</h3>
+            <span class="badge" id="pillarTodayBadge">
+              0/4 aujourd’hui
+            </span>
+          </div>
+
+          <p class="muted">
+            Diaphragme → transverse → périnée → flexion arrière.
+            L’application reprend ton niveau actuel pour chaque pilier.
+          </p>
+
+          <button
+            class="primary wide"
+            id="startAllPillars"
+          >
+            Commencer les 4 piliers
+          </button>
+
+        </div>
+
+
+        <div id="pillarCards"></div>
+
+
+        <div class="card">
+
+          <div class="section-title">
+            <h3>Principe</h3>
+            <span class="muted">progression</span>
+          </div>
+
+          <p class="muted small">
+            Chaque pilier évolue indépendamment. L’objectif n’est pas de forcer une progression mais d’apprendre le mouvement, de le maîtriser et de progresser lorsque le palier actuel devient confortable.
+          </p>
+
+        </div>
+
       </div>
+
+
+      <!-- RUNNER PILIERS -->
+
+      <div id="pillarRunner" class="pillar-runner">
+
+        <div class="runner-top">
+
+          <button class="back" id="pillarClose">
+            ‹
+          </button>
+
+          <div>
+            <div class="eyebrow">
+              4 PILIERS
+            </div>
+
+            <h2 id="pillarRunTitle"></h2>
+          </div>
+
+        </div>
+
+
+        <div class="card runner-card">
+
+          <div
+            class="badge"
+            id="pillarProgress"
+          ></div>
+
+          <h2 id="pillarPhase"></h2>
+
+          <p
+            class="muted"
+            id="pillarHelp"
+          ></p>
+
+          <div
+            id="pillarClock"
+            class="big-clock"
+          >
+            00:00
+          </div>
+
+          <div
+            id="pillarRepControls"
+          ></div>
+
+          <button
+            class="primary wide"
+            id="pillarAction"
+          >
+            Démarrer
+          </button>
+
+        </div>
+
+
+        <!-- FEEDBACK PILIER -->
+
+        <div
+          class="card"
+          id="pillarFeedback"
+          style="display:none"
+        >
+
+          <div class="section-title">
+            <h3>Comment s’est passé ce pilier ?</h3>
+            <span class="muted">10 secondes</span>
+          </div>
+
+          <p class="muted small">
+            Ton ressenti permet de conserver ton niveau ou de signaler qu’une progression pourra être essayée.
+          </p>
+
+
+          <div class="choice-row">
+
+            <button
+              class="choice"
+              data-pfeel="easy"
+            >
+              😌 Facile
+            </button>
+
+            <button
+              class="choice selected"
+              data-pfeel="mastered"
+            >
+              🙂 Maîtrisé
+            </button>
+
+            <button
+              class="choice"
+              data-pfeel="hard"
+            >
+              😣 Difficile
+            </button>
+
+          </div>
+
+
+          <div class="choice-row">
+
+            <button
+              class="choice selected"
+              data-ppain="none"
+            >
+              Aucune gêne
+            </button>
+
+            <button
+              class="choice danger"
+              data-ppain="discomfort"
+            >
+              Gêne
+            </button>
+
+            <button
+              class="choice danger"
+              data-ppain="pain"
+            >
+              Douleur
+            </button>
+
+          </div>
+
+
+          <button
+            class="primary wide"
+            id="pillarFeedbackValidate"
+          >
+            Enregistrer
+          </button>
+
+        </div>
+
+
+        <div
+          class="safety-note"
+          id="pillarSafety"
+        >
+          La progression doit rester confortable. Arrête le mouvement concerné en cas de douleur.
+        </div>
+
+      </div>
+
     </section>
 
+
+    <!-- =====================================================
+         SOUPLESSE
+         ===================================================== -->
 
     <section id="flexibility" class="page">
+
       <div id="flexListView">
-        <div class="section-title"><h2>Souplesse</h2><span class="badge">35 exercices</span></div>
-        <p class="muted intro">Environ 30 minutes. L'application répartit le catalogue sur la semaine et évite de répéter inutilement les mêmes exercices.</p>
+
+        <div class="section-title">
+          <h2>Souplesse</h2>
+          <span class="badge">35 exercices</span>
+        </div>
+
+        <p class="muted intro">
+          Environ 30 minutes. L’application répartit le catalogue sur la semaine.
+        </p>
+
+
         <div class="grid3 flex-summary">
-          <div class="stat card"><span>Cette semaine</span><strong id="flexWeekly">0/35</strong></div>
-          <div class="stat card"><span>Séances</span><strong id="flexSessions">0/3</strong></div>
-          <div class="stat card"><span>Douleur</span><strong id="flexPain">0</strong></div>
+
+          <div class="stat card">
+            <span>Cette semaine</span>
+            <strong id="flexWeekly">0/35</strong>
+          </div>
+
+          <div class="stat card">
+            <span>Séances</span>
+            <strong id="flexSessions">0/3</strong>
+          </div>
+
+          <div class="stat card">
+            <span>Douleur</span>
+            <strong id="flexPain">0</strong>
+          </div>
+
         </div>
+
+
         <div class="card">
-          <div class="section-title"><h3>Prochaine séance</h3><span class="muted" id="flexNextLabel">A</span></div>
+
+          <div class="section-title">
+            <h3>Prochaine séance</h3>
+            <span
+              class="muted"
+              id="flexNextLabel"
+            >
+              A
+            </span>
+          </div>
+
           <div id="flexPreview"></div>
-          <button class="primary wide" id="startFlex">Démarrer la séance</button>
+
+          <button
+            class="primary wide"
+            id="startFlex"
+          >
+            Démarrer la séance
+          </button>
+
         </div>
+
+
         <div class="card">
-          <div class="section-title"><h3>Catalogue</h3><span class="muted">1–35</span></div>
+
+          <div class="section-title">
+            <h3>Catalogue</h3>
+            <span class="muted">1–35</span>
+          </div>
+
           <div class="zone-tabs">
-            <button class="zone-tab active" data-zone="all">Tous</button>
-            <button class="zone-tab" data-zone="upper">Haut</button>
-            <button class="zone-tab" data-zone="middle">Milieu</button>
-            <button class="zone-tab" data-zone="lower">Bas</button>
+
+            <button
+              class="zone-tab active"
+              data-zone="all"
+            >
+              Tous
+            </button>
+
+            <button
+              class="zone-tab"
+              data-zone="upper"
+            >
+              Haut
+            </button>
+
+            <button
+              class="zone-tab"
+              data-zone="middle"
+            >
+              Milieu
+            </button>
+
+            <button
+              class="zone-tab"
+              data-zone="lower"
+            >
+              Bas
+            </button>
+
           </div>
+
           <div id="flexCatalog"></div>
+
         </div>
+
       </div>
+
+
+      <!-- RUNNER SOUPLESSE -->
+
       <div id="flexRunner" class="pillar-runner">
-        <div class="runner-top"><button class="back" id="flexClose">‹</button><div><div class="eyebrow">SOUPLESSE</div><h2 id="flexRunTitle">Séance A</h2></div></div>
-        <div class="card runner-card">
-          <div class="badge" id="flexProgress">Exercice 1 / 15</div>
-          <h2 id="flexExercise">Exercice 1</h2>
-          <p class="muted" id="flexZone"></p>
-          <div id="flexClock">01:00</div>
-          <button class="primary wide" id="flexTimerAction">Démarrer 1 min</button>
-        </div>
-        <div class="card">
-          <h3>Ressenti</h3>
-          <div class="feeling-grid">
-            <button class="feel" data-feel="comfortable">Confortable</button>
-            <button class="feel" data-feel="tension">Tension forte</button>
-            <button class="feel danger" data-feel="pain">Douleur</button>
+
+        <div class="runner-top">
+
+          <button
+            class="back"
+            id="flexClose"
+          >
+            ‹
+          </button>
+
+          <div>
+            <div class="eyebrow">
+              SOUPLESSE
+            </div>
+
+            <h2 id="flexRunTitle">
+              Séance A
+            </h2>
           </div>
-          <p class="muted small">Une douleur n'est jamais un objectif de progression. Pour la hanche gauche, l'application conserve séparément tout signal de douleur.</p>
+
         </div>
-        <button class="secondary wide" id="flexSkip">Passer cet exercice</button>
+
+
+        <div class="card runner-card">
+
+          <div
+            class="badge"
+            id="flexProgress"
+          >
+            Exercice 1 / 15
+          </div>
+
+          <h2 id="flexExercise">
+            Exercice 1
+          </h2>
+
+          <p
+            class="muted"
+            id="flexZone"
+          ></p>
+
+          <div
+            id="flexClock"
+            class="big-clock"
+          >
+            01:00
+          </div>
+
+          <button
+            class="primary wide"
+            id="flexTimerAction"
+          >
+            Démarrer 1 min
+          </button>
+
+        </div>
+
+
+        <div class="card">
+
+          <h3>Ressenti</h3>
+
+          <div class="feeling-grid">
+
+            <button
+              class="feel"
+              data-feel="comfortable"
+            >
+              Confortable
+            </button>
+
+            <button
+              class="feel"
+              data-feel="tension"
+            >
+              Tension forte
+            </button>
+
+            <button
+              class="feel danger"
+              data-feel="pain"
+            >
+              Douleur
+            </button>
+
+          </div>
+
+          <p class="muted small">
+            Une douleur n’est jamais un objectif de progression.
+          </p>
+
+        </div>
+
+
+        <button
+          class="secondary wide"
+          id="flexSkip"
+        >
+          Passer cet exercice
+        </button>
+
       </div>
+
     </section>
+
+
+    <!-- =====================================================
+         PROGRESSION
+         ===================================================== -->
 
     <section id="progress" class="page">
-      <div class="section-title"><h2>Progression</h2><span class="badge">V0.7</span></div>
+
+      <div class="section-title">
+        <h2>Progression</h2>
+        <span class="badge">V0.8</span>
+      </div>
+
 
       <div class="card">
-        <div class="section-title"><h3>Résumé</h3><span class="muted">depuis le départ</span></div>
+
+        <div class="section-title">
+          <h3>Résumé</h3>
+          <span class="muted">
+            depuis le départ
+          </span>
+        </div>
+
         <div class="grid3">
-          <div class="stat"><span>Activités</span><strong id="historyCount">0</strong></div>
-          <div class="stat"><span>Souplesse</span><strong id="historyFlexCount">0</strong></div>
-          <div class="stat"><span>Piliers</span><strong id="historyPillarCount">0</strong></div>
-        </div>
-      </div>
 
-      <div class="card">
-        <div class="section-title"><h3>Mensurations</h3><button class="mini-btn" id="addMeasureBtn">+ Ajouter</button></div>
-        <div id="measureTrend"></div>
-        <div class="measure-list" id="measureList"></div>
-      </div>
-
-      <div class="card">
-        <div class="section-title"><h3>Historique</h3><span class="muted" id="historyFilterLabel">Tout</span></div>
-        <div class="history-tabs">
-          <button class="history-tab active" data-history-filter="all">Tout</button>
-          <button class="history-tab" data-history-filter="Musculation">Muscu</button>
-          <button class="history-tab" data-history-filter="Souplesse">Souplesse</button>
-          <button class="history-tab" data-history-filter="4 piliers">Piliers</button>
-          <button class="history-tab" data-history-filter="Tests">Tests</button>
-        </div>
-        <div id="history"><p class="muted">Tes premières séances apparaîtront ici.</p></div>
-      </div>
-
-      <div class="card">
-        <h3>Sauvegarde</h3>
-        <p class="muted small">Tes données restent sur l’appareil. Exporte régulièrement une sauvegarde JSON.</p>
-        <div class="backup-actions">
-          <button class="secondary" id="exportData">Exporter</button>
-          <label class="secondary file-label">Importer<input type="file" id="importData" accept="application/json" hidden></label>
-        </div>
-      </div>
-
-      <div id="measureModal" class="modal">
-        <div class="modal-sheet">
-          <div class="section-title"><h3>Nouvelle mesure</h3><button class="icon-btn" id="closeMeasureModal">×</button></div>
-          <div class="form-grid">
-            <label>Poids (kg)<input id="mWeight" type="number" step="0.1"></label>
-            <label>Taille (cm)<input id="mWaist" type="number" step="0.1"></label>
-            <label>Poitrine (cm)<input id="mChest" type="number" step="0.1"></label>
-            <label>Épaules (cm)<input id="mShoulders" type="number" step="0.1"></label>
-            <label>Hanches (cm)<input id="mHips" type="number" step="0.1"></label>
-            <label>Bras G (cm)<input id="mArmL" type="number" step="0.1"></label>
-            <label>Bras D (cm)<input id="mArmR" type="number" step="0.1"></label>
+          <div class="stat">
+            <span>Activités</span>
+            <strong id="historyCount">0</strong>
           </div>
-          <button class="primary wide" id="saveMeasure">Enregistrer</button>
+
+          <div class="stat">
+            <span>Souplesse</span>
+            <strong id="historyFlexCount">0</strong>
+          </div>
+
+          <div class="stat">
+            <span>Piliers</span>
+            <strong id="historyPillarCount">0</strong>
+          </div>
+
         </div>
+
       </div>
+
+
+      <div class="card">
+
+        <div class="section-title">
+
+          <h3>Mensurations</h3>
+
+          <button
+            class="mini-btn"
+            id="addMeasureBtn"
+          >
+            + Ajouter
+          </button>
+
+        </div>
+
+        <div id="measureTrend"></div>
+
+        <div
+          class="measure-list"
+          id="measureList"
+        ></div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="section-title">
+
+          <h3>Historique</h3>
+
+          <span
+            class="muted"
+            id="historyFilterLabel"
+          >
+            Tout
+          </span>
+
+        </div>
+
+
+        <div class="history-tabs">
+
+          <button
+            class="history-tab active"
+            data-history-filter="all"
+          >
+            Tout
+          </button>
+
+          <button
+            class="history-tab"
+            data-history-filter="Musculation"
+          >
+            Muscu
+          </button>
+
+          <button
+            class="history-tab"
+            data-history-filter="Souplesse"
+          >
+            Souplesse
+          </button>
+
+          <button
+            class="history-tab"
+            data-history-filter="4 piliers"
+          >
+            Piliers
+          </button>
+
+          <button
+            class="history-tab"
+            data-history-filter="Tests"
+          >
+            Tests
+          </button>
+
+        </div>
+
+
+        <div id="history">
+          <p class="muted">
+            Tes premières séances apparaîtront ici.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>Sauvegarde</h3>
+
+        <p class="muted small">
+          Tes données restent sur l’appareil. Exporte régulièrement une sauvegarde JSON.
+        </p>
+
+        <div class="backup-actions">
+
+          <button
+            class="secondary"
+            id="exportData"
+          >
+            Exporter
+          </button>
+
+          <label class="secondary file-label">
+            Importer
+
+            <input
+              type="file"
+              id="importData"
+              accept="application/json"
+              hidden
+            >
+
+          </label>
+
+        </div>
+
+      </div>
+
+
+      <!-- MODAL MENSURATIONS -->
+
+      <div
+        id="measureModal"
+        class="modal"
+      >
+
+        <div class="modal-sheet">
+
+          <div class="section-title">
+
+            <h3>Nouvelle mesure</h3>
+
+            <button
+              class="icon-btn"
+              id="closeMeasureModal"
+            >
+              ×
+            </button>
+
+          </div>
+
+
+          <div class="form-grid">
+
+            <label>
+              Poids (kg)
+              <input
+                id="mWeight"
+                type="number"
+                step="0.1"
+              >
+            </label>
+
+            <label>
+              Taille (cm)
+              <input
+                id="mWaist"
+                type="number"
+                step="0.1"
+              >
+            </label>
+
+            <label>
+              Poitrine (cm)
+              <input
+                id="mChest"
+                type="number"
+                step="0.1"
+              >
+            </label>
+
+            <label>
+              Épaules (cm)
+              <input
+                id="mShoulders"
+                type="number"
+                step="0.1"
+              >
+            </label>
+
+            <label>
+              Hanches (cm)
+              <input
+                id="mHips"
+                type="number"
+                step="0.1"
+              >
+            </label>
+
+            <label>
+              Bras G (cm)
+              <input
+                id="mArmL"
+                type="number"
+                step="0.1"
+              >
+            </label>
+
+            <label>
+              Bras D (cm)
+              <input
+                id="mArmR"
+                type="number"
+                step="0.1"
+              >
+            </label>
+
+          </div>
+
+
+          <button
+            class="primary wide"
+            id="saveMeasure"
+          >
+            Enregistrer
+          </button>
+
+        </div>
+
+      </div>
+
     </section>
+
+
+    <!-- =====================================================
+         PROFIL
+         ===================================================== -->
 
     <section id="profile" class="page">
+
       <h2>Profil</h2>
+
+
       <div class="card profile-card">
-        <div class="avatar">F</div>
-        <h3>Florent</h3>
-        <p>Objectif : <b>remusculation + perte de gras</b></p>
-        <div class="metrics">
-          <div><span>Taille</span><b>1,77 m</b></div>
-          <div><span>Poids départ</span><b>85 kg</b></div>
-          <div><span>Musculation</span><b>Mar. / Jeu.</b></div>
-          <div><span>Rythme</span><b>2 séances</b></div>
+
+        <div class="avatar">
+          F
         </div>
+
+        <h3>Florent</h3>
+
+        <p>
+          Objectif :
+          <b>remusculation + perte de gras</b>
+        </p>
+
+        <div class="metrics">
+
+          <div>
+            <span>Taille</span>
+            <b>1,77 m</b>
+          </div>
+
+          <div>
+            <span>Poids départ</span>
+            <b>85 kg</b>
+          </div>
+
+          <div>
+            <span>Musculation</span>
+            <b>Mar. / Jeu.</b>
+          </div>
+
+          <div>
+            <span>Rythme</span>
+            <b>2 séances</b>
+          </div>
+
+        </div>
+
       </div>
+
+
       <div class="card">
+
         <h3>Matériel</h3>
-        <p>✓ Barre de traction &nbsp; ✓ Supports/chaises &nbsp; ✓ Matériel Lafay</p>
+
+        <p>
+          ✓ Barre de traction
+          &nbsp;
+          ✓ Supports/chaises
+          &nbsp;
+          ✓ Matériel Lafay
+        </p>
+
       </div>
+
     </section>
+
   </main>
 
+
+  <!-- =======================================================
+       NAVIGATION
+       ======================================================= -->
+
   <nav class="bottom-nav">
-    <button class="nav active" data-nav="home"><span>⌂</span>Accueil</button>
-    <button class="nav" data-nav="session"><span>▶</span>Séance</button>
-    <button class="nav" data-nav="pillars"><span>◉</span>Piliers</button>
-    <button class="nav" data-nav="flexibility"><span>◇</span>Souplesse</button>
-    <button class="nav" data-nav="progress"><span>↗</span>Progrès</button>
-    <button class="nav" data-nav="profile"><span>●</span>Profil</button>
+
+    <button
+      class="nav active"
+      data-nav="home"
+    >
+      <span>⌂</span>
+      Accueil
+    </button>
+
+    <button
+      class="nav"
+      data-nav="session"
+    >
+      <span>▶</span>
+      Séance
+    </button>
+
+    <button
+      class="nav"
+      data-nav="pillars"
+    >
+      <span>◉</span>
+      Piliers
+    </button>
+
+    <button
+      class="nav"
+      data-nav="flexibility"
+    >
+      <span>◇</span>
+      Souplesse
+    </button>
+
+    <button
+      class="nav"
+      data-nav="progress"
+    >
+      <span>↗</span>
+      Progrès
+    </button>
+
+    <button
+      class="nav"
+      data-nav="profile"
+    >
+      <span>●</span>
+      Profil
+    </button>
+
   </nav>
+
 </div>
+
 <script src="app.js"></script>
+
 </body>
 </html>
