@@ -212,9 +212,9 @@ function validateTest(){
  tMode="rest";$("#testRepBox").style.display="none";$("#testProgress").textContent="Récupération";$("#testExercise").textContent="3 minutes";
  $("#testHelp").textContent=`${k} enregistré : ${tReps} répétitions. Récupère avant le test suivant.`;
  $("#testRestClock").style.display="block";tRemaining=180;drawTestRest();$("#testAction").textContent="Pause";
- clearInterval(tTimer);tTimer=setInterval(()=>{tRemaining--;drawTestRest();if(tRemaining<=0){clearInterval(tTimer);tTimer=null;buzz();tMode="test";nextTest()}},1000);
- $("#testAction").onclick=()=>{if(tTimer){clearInterval(tTimer);tTimer=null;$("#testAction").textContent="Reprendre"}else{tTimer=setInterval(()=>{tRemaining--;drawTestRest();if(tRemaining<=0){clearInterval(tTimer);tTimer=null;buzz();tMode="test";nextTest()}},1000);$("#testAction").textContent="Pause"}};
-}
+ clearInterval(tTimer);tTimer=setInterval(()=>{tRemaining--;drawTestRest();if(tRemaining<=0){tRemaining=0;drawTestRest();clearInterval(tTimer);tTimer=null;buzz();$("#testAction").textContent="Exercice suivant";}},1000);
+ $("#testAction").onclick=()=>{if(tTimer){clearInterval(tTimer);tTimer=null;$("#testAction").textContent="Reprendre";}else if(tRemaining<=0){tMode="test";nextTest();}else{tTimer=setInterval(()=>{tRemaining--;drawTestRest();if(tRemaining<=0){clearInterval(tTimer);tTimer=null;$("#testAction").textContent="Exercice suivant";}},1000);$("#testAction").textContent="Pause";}};
+ }
 function drawTestRest(){let m=Math.floor(tRemaining/60),s=tRemaining%60;$("#testRestClock").textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`}
 function finishTests(){
  clearInterval(tTimer);tTimer=null;const date=new Date().toLocaleDateString("fr-FR");
