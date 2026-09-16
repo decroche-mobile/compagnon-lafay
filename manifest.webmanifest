@@ -1,0 +1,11 @@
+{
+  "name":"Compagnon Lafay",
+  "short_name":"Lafay",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#0c0e10",
+  "theme_color":"#101214",
+  "icons":[
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
