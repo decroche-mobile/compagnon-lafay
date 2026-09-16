@@ -197,7 +197,7 @@ function openTests(){
 }
 function closeTests(){clearInterval(tTimer);tTimer=null;$("#testRunner").classList.remove("show");$("#strengthHome").style.display="block";renderStrengthHome()}
 function nextTest(){
- if(tMode==="rest"){return}
+ if(tMode==="rest"){clearInterval(tTimer);tTimer=null;tMode="test";}
  tIndex++;
  if(tIndex>=testOrder.length){finishTests();return}
  tMode="test";tReps=0;
