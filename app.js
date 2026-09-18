@@ -60,20 +60,73 @@ function nav(id){
 }
 $$("[data-nav]").forEach(b=>b.onclick=()=>nav(b.dataset.nav));
 
+function parseFRDate(str){
+ const m=String(str||"").match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+ if(!m)return null;
+ const d=new Date(Number(m[3]),Number(m[2])-1,Number(m[1]));
+ d.setHours(0,0,0,0);
+ return d;
+}
+function frDate(d){return d.toLocaleDateString("fr-FR")}
+function mondayOfCurrentWeek(){
+ const d=new Date();d.setHours(0,0,0,0);
+ d.setDate(d.getDate()-((d.getDay()+6)%7));
+ return d;
+}
+function dateForWeekIndex(i){
+ const d=mondayOfCurrentWeek();d.setDate(d.getDate()+i);return d;
+}
+function hasMuscuOnDate(dateKey){
+ return state.history.some(x=>x.date===dateKey && x.type==="Musculation");
+}
+function hasFlexOnDate(dateKey){
+ return state.flexHistory.some(x=>x.date===dateKey);
+}
+function pillarCountOnDate(dateKey){
+ return new Set(state.pillarHistory.filter(x=>x.date===dateKey).map(x=>x.key)).size;
+}
+function actualDoneForDay(i){
+ const key=frDate(dateForWeekIndex(i)),type=week[i][2];
+ if(type==="muscu")return hasMuscuOnDate(key);
+ if(type==="flexpill")return hasFlexOnDate(key)&&pillarCountOnDate(key)>=4;
+ return false;
+}
+function isDayDone(i){return actualDoneForDay(i)||Boolean(state.done[i])}
+function markTodayMuscuDone(){
+ const i=(new Date().getDay()+6)%7;
+ if(week[i]?.[2]==="muscu")state.done[i]=true;
+}
 function renderWeek(){
- $("#weekPlan").innerHTML=week.map((d,i)=>`<div class="day">
+ $("#weekPlan").innerHTML=week.map((d,i)=>{
+ const done=isDayDone(i);
+ return `<div class="day">
  <div class="day-name">${d[0]}</div><div class="day-task">${d[1]}</div>
- ${d[2]!=="rest"?`<button class="check ${state.done[i]?"done":""}" data-day="${i}">${state.done[i]?"✓":""}</button>`:"<span></span>"}
- </div>`).join("");
- $$("[data-day]").forEach(b=>b.onclick=()=>{state.done[b.dataset.day]=!state.done[b.dataset.day];save();render();});
+ ${d[2]!=="rest"?`<button class="check ${done?"done":""}" data-day="${i}">${done?"✓":""}</button>`:"<span></span>"}
+ </div>`}).join("");
+ $$('[data-day]').forEach(b=>b.onclick=()=>{
+  const i=Number(b.dataset.day);
+  /* La coche manuelle reste disponible pour un rattrapage, mais une activité réellement enregistrée reste prioritaire. */
+  if(actualDoneForDay(i))state.done[i]=true;
+  else state.done[i]=!state.done[i];
+  save();render();
+ });
 }
 function renderScores(){
  let mus=0,flex=0,pill=0;
- week.forEach((d,i)=>{if(!state.done[i])return;if(d[2]==="muscu")mus++;if(d[2]==="flexpill"){flex++;pill++;}});
- $("#muscuScore").textContent=`${mus}/2`;$("#flexScore").textContent=`${flex}/3`;$("#pillarsScore").textContent=`${pill}/3`;
+ week.forEach((d,i)=>{
+  const key=frDate(dateForWeekIndex(i));
+  if(d[2]==="muscu" && (hasMuscuOnDate(key)||state.done[i]))mus++;
+  if(d[2]==="flexpill"){
+   if(hasFlexOnDate(key)||state.done[i])flex++;
+   if(pillarCountOnDate(key)>=4||state.done[i])pill++;
+  }
+ });
+ $("#muscuScore").textContent=`${mus}/2`;
+ $("#flexScore").textContent=`${flex}/3`;
+ $("#pillarsScore").textContent=`${pill}/3`;
 }
 function renderToday(){
- const idx=(new Date().getDay()+6)%7,d=week[idx],todayKey=new Date().toLocaleDateString("fr-FR");
+ const idx=(new Date().getDay()+6)%7,d=week[idx],todayKey=todayFR();
  $("#todayLabel").textContent=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(new Date());
  $("#todayTitle").textContent=d[1];
  $("#todaySub").textContent=d[2]==="rest"?"Récupération prévue aujourd’hui.":"Ta séance prévue est prête.";
@@ -88,16 +141,16 @@ function renderToday(){
  ];
  else tasks=[{k:"rest",label:"Récupération",target:"repos prévu",nav:null}];
 
- const flexDone=state.flexHistory.some(x=>x.date===todayKey);
- const pillarDone=new Set(state.pillarHistory.filter(x=>x.date===todayKey).map(x=>x.key)).size>=4;
- const muscuDone=state.history.some(x=>x.date===todayKey && (x.type==="Musculation" || x.type==="Démo moteur"));
+ const flexDone=hasFlexOnDate(todayKey);
+ const pillarDone=pillarCountOnDate(todayKey)>=4;
+ const muscuDone=hasMuscuOnDate(todayKey)||Boolean(state.done[idx]&&d[2]==="muscu");
  const doneMap={flex:flexDone,pillars:pillarDone,muscu:muscuDone,rest:true};
  const doneCount=tasks.filter(t=>doneMap[t.k]).length;
  $("#todayProgressBadge").textContent=`${doneCount}/${tasks.length}`;
  $("#todayChecklist").innerHTML=tasks.map(t=>`<div class="today-task ${doneMap[t.k]?"done":""}" ${t.nav?`data-today-nav="${t.nav}"`:""}>
    <div class="today-icon">${doneMap[t.k]?"✓":"•"}</div><div><b>${t.label}</b><div class="muted small">${t.target}</div></div><span class="muted">${doneMap[t.k]?"fait":"›"}</span>
  </div>`).join("");
- $$("[data-today-nav]").forEach(x=>x.onclick=()=>nav(x.dataset.todayNav));
+ $$('[data-today-nav]').forEach(x=>x.onclick=()=>nav(x.dataset.todayNav));
 
  const last=state.history[0];
  $("#lastActivity").innerHTML=last?`<div class="history-item"><div class="date">${last.date}</div><div class="type">${last.type}</div><div class="detail">${last.detail}</div></div>`:'<p class="muted">Aucune activité enregistrée.</p>';
@@ -372,6 +425,7 @@ function finishWorkout(){
   detail:isLevel2?`Niveau II · ${wPlan.length} blocs · ${total} reps · diff ${avg}/5`:`${wPlan.length} ex. · ${total} reps · diff ${avg}/5 · non prescriptif`,
   workout:{results:wResults,readiness:{...state.readiness},total,avg,pain,discomfort,clean}
  });
+ if(isLevel2)markTodayMuscuDone();
  save();
 
  $("#workoutFeedback").style.display="none";
@@ -481,6 +535,8 @@ function openPillar(key,fromQueue=false){
 
 function closePillar(){
  clearInterval(pTimer);
+ clearInterval(diaphragmSessionTimer);
+ diaphragmSessionTimer=null;
  pTimer=null;
  $("#pillarRunner").classList.remove("show");
  $("#pillarListView").style.display="block";
@@ -511,43 +567,136 @@ function setPillarScreen(progress,phase,help,clock,action){
  $("#pillarAction").textContent=action;
 }
 
-function prepareDiaphragm(){
- const sec=diaphragmSeconds();
- pStep=0;
+/* DIAPHRAGME — vraie séance guidée 10 min.
+   Le palier règle la durée de l'expiration, pas la durée totale de la séance.
+   Guidage sonore : tonalités distinctes à chaque changement de phase. */
+const DIAPHRAGM_SESSION_SECONDS=600;
+let diaphragmElapsed=0,diaphragmCycle=0,diaphragmPhase="ready";
+let diaphragmSessionTimer=null;
+let audioCtx=null;
 
- setPillarScreen(
-  `Palier actuel : ${sec} s`,
-  "Installation",
-  "Installe-toi confortablement et relâche le corps. Inspire profondément sans forcer.",
-  `00:${String(sec).padStart(2,"0")}`,
-  "Commencer l’expiration"
- );
-
- $("#pillarAction").onclick=()=>startDiaphragmPhase("expire");
+function ensureAudio(){
+ try{
+  audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended")audioCtx.resume();
+ }catch(e){}
 }
-
-function startDiaphragmPhase(phase){
+function tone(freq=660,duration=.12,delay=0){
+ try{
+  ensureAudio(); if(!audioCtx)return;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  const t=audioCtx.currentTime+delay;
+  o.frequency.value=freq;o.type="sine";
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.12,t+.015);g.gain.exponentialRampToValueAtTime(.0001,t+duration);
+  o.connect(g);g.connect(audioCtx.destination);o.start(t);o.stop(t+duration+.03);
+ }catch(e){}
+}
+function phaseSound(phase){
+ if(phase==="inhale"){tone(520,.12);tone(700,.12,.15)}
+ else if(phase==="expire"){tone(720,.12);tone(480,.18,.15)}
+ else if(phase==="rest")tone(430,.16);
+ else if(phase==="finish"){tone(620,.12);tone(780,.12,.18);tone(930,.22,.36)}
+ if(navigator.vibrate)navigator.vibrate(phase==="finish"?[80,80,160]:50);
+}
+function prepareDiaphragm(){
+ clearInterval(pTimer);clearInterval(diaphragmSessionTimer);pTimer=null;diaphragmSessionTimer=null;
  const sec=diaphragmSeconds();
-
- pRemaining=phase==="expire"?sec:(sec<30?sec:30);
- drawPillarTimer();
-
- $("#pillarPhase").textContent=phase==="expire"
-  ?"Expiration lente"
-  :"Récupération";
-
- $("#pillarHelp").textContent=phase==="expire"
-  ?"Expire le plus lentement possible, de façon régulière et détendue."
-  :"Respire naturellement et relâche-toi avant le passage suivant.";
-
+ diaphragmElapsed=0;diaphragmCycle=0;diaphragmPhase="ready";
+ setPillarScreen(
+  `Palier actuel : ${sec} s • séance 10 min`,
+  "Installation",
+  "Allonge-toi sur le dos, genoux fléchis, pieds à plat et bas du dos au contact du sol. Quand tu es prêt, ferme les yeux : les sons guideront toute la séance.",
+  "10:00",
+  "Démarrer la séance"
+ );
+ $("#pillarAction").onclick=()=>{ensureAudio();startDiaphragmSession()};
+}
+function startDiaphragmSession(){
+ diaphragmElapsed=0;diaphragmCycle=0;
+ clearInterval(diaphragmSessionTimer);
+ diaphragmSessionTimer=setInterval(()=>{
+  diaphragmElapsed++;
+  if(diaphragmElapsed>=DIAPHRAGM_SESSION_SECONDS)finishDiaphragmSession();
+ },1000);
+ startDiaphragmPhase("inhale");
+}
+function startDiaphragmPhase(phase){
+ if(diaphragmElapsed>=DIAPHRAGM_SESSION_SECONDS){finishDiaphragmSession();return}
+ clearInterval(pTimer);pTimer=null;
+ const sec=diaphragmSeconds();
+ diaphragmPhase=phase;
+ if(phase==="inhale"){
+  diaphragmCycle++;
+  pRemaining=5;
+  phaseSound("inhale");
+  $("#pillarPhase").textContent="Inspiration profonde";
+  $("#pillarHelp").textContent="Inspire profondément, sans forcer. Laisse le ventre et le thorax se remplir.";
+ }else if(phase==="expire"){
+  pRemaining=sec;
+  phaseSound("expire");
+  $("#pillarPhase").textContent="Expiration lente";
+  $("#pillarHelp").textContent="Expire lentement et régulièrement. Reste détendu et termine sans forcer.";
+ }else{
+  pRemaining=Math.min(sec,30);
+  phaseSound("rest");
+  $("#pillarPhase").textContent="Récupération";
+  $("#pillarHelp").textContent="Respire naturellement et relâche complètement le corps.";
+ }
+ drawDiaphragmClock();
  $("#pillarAction").textContent="Pause";
- $("#pillarAction").onclick=togglePillarTimer;
-
- runCountdown(()=>{
-  buzz();
-  if(phase==="expire")startDiaphragmPhase("rest");
-  else showPillarFeedback();
- });
+ $("#pillarAction").onclick=toggleDiaphragmSession;
+ pTimer=setInterval(()=>{
+  pRemaining--;
+  drawDiaphragmClock();
+  if(pRemaining<=0){
+   clearInterval(pTimer);pTimer=null;
+   if(phase==="inhale")startDiaphragmPhase("expire");
+   else if(phase==="expire")startDiaphragmPhase("rest");
+   else startDiaphragmPhase("inhale");
+  }
+ },1000);
+}
+function drawDiaphragmClock(){
+ const left=Math.max(0,DIAPHRAGM_SESSION_SECONDS-diaphragmElapsed);
+ $("#pillarProgress").textContent=`Palier ${diaphragmSeconds()} s • cycle ${diaphragmCycle} • séance ${formatTime(left)} restante`;
+ $("#pillarClock").textContent=formatTime(Math.max(0,pRemaining));
+}
+function toggleDiaphragmSession(){
+ if(pTimer||diaphragmSessionTimer){
+  clearInterval(pTimer);clearInterval(diaphragmSessionTimer);pTimer=null;diaphragmSessionTimer=null;
+  $("#pillarAction").textContent="Reprendre";
+  $("#pillarAction").onclick=resumeDiaphragmSession;
+ }else resumeDiaphragmSession();
+}
+function resumeDiaphragmSession(){
+ diaphragmSessionTimer=setInterval(()=>{
+  diaphragmElapsed++;
+  if(diaphragmElapsed>=DIAPHRAGM_SESSION_SECONDS)finishDiaphragmSession();
+ },1000);
+ /* Reprend la phase en cours avec le temps restant. */
+ drawDiaphragmClock();
+ $("#pillarAction").textContent="Pause";
+ $("#pillarAction").onclick=toggleDiaphragmSession;
+ pTimer=setInterval(()=>{
+  pRemaining--;drawDiaphragmClock();
+  if(pRemaining<=0){
+   clearInterval(pTimer);pTimer=null;
+   if(diaphragmPhase==="inhale")startDiaphragmPhase("expire");
+   else if(diaphragmPhase==="expire")startDiaphragmPhase("rest");
+   else startDiaphragmPhase("inhale");
+  }
+ },1000);
+}
+function finishDiaphragmSession(){
+ clearInterval(pTimer);clearInterval(diaphragmSessionTimer);pTimer=null;diaphragmSessionTimer=null;
+ diaphragmElapsed=DIAPHRAGM_SESSION_SECONDS;
+ phaseSound("finish");
+ $("#pillarProgress").textContent=`10 min terminées • ${diaphragmCycle} cycles`;
+ $("#pillarPhase").textContent="Séance terminée ✓";
+ $("#pillarHelp").textContent="Reste quelques instants détendu, puis indique ton ressenti. Le palier n'augmente jamais automatiquement pendant la séance.";
+ $("#pillarClock").textContent="10:00";
+ $("#pillarAction").textContent="Évaluer la séance";
+ $("#pillarAction").onclick=showPillarFeedback;
 }
 
 function preparePerineum(){
@@ -734,7 +883,8 @@ function completePillar(){
   title:p.title,
   feel:pillarFeedback.feel,
   pain:pillarFeedback.pain,
-  status:pillarStatus(activePillar)
+  status:pillarStatus(activePillar),
+  ...(activePillar==="diaphragm"?{durationSec:DIAPHRAGM_SESSION_SECONDS,cycles:diaphragmCycle,palierSec:diaphragmSeconds()}: {})
  };
 
  state.pillarHistory.unshift(entry);
